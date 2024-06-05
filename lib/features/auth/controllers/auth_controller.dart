@@ -57,6 +57,7 @@ class AuthController extends GetxController {
   Future<void> getOTP() async {
     try {
       isLoading.value = true;
+
       if (emailController.text.isNotEmpty &&
           phoneNumberController.text.isNotEmpty &&
           passwordController.text.isNotEmpty &&
@@ -80,6 +81,7 @@ class AuthController extends GetxController {
   Future<void> verifyOTP() async {
     try {
       isLoading.value = true;
+
       if (verificationCodeEntered.isEmpty ||
           verificationCodeEntered.value.length < verificationCodeLength) {
         Get.snackbar('Attention', 'Please enter the verification code');

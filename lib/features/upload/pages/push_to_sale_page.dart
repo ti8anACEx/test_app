@@ -24,11 +24,7 @@ class PushToSalePage extends StatelessWidget {
   Widget build(BuildContext context) {
     return Scaffold(
         appBar: AppBar(
-          title:
-              "Push ${pushToSaleController.itemController.itemModel!.draftProductName} to Sale"
-                  .text
-                  .black
-                  .make(),
+          title: "Push item to Sale".text.black.make(),
           centerTitle: true,
           shadowColor: transparentColor,
           backgroundColor: transparentColor,

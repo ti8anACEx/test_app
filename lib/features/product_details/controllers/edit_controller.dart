@@ -10,7 +10,6 @@ import 'package:get/get.dart';
 import 'package:image_picker/image_picker.dart';
 import 'package:test_app/features/home/controllers/item_controller.dart';
 import 'package:test_app/features/home/pages/home_page.dart';
-import 'package:uuid/uuid.dart';
 
 import '../../../models/item_model.dart';
 import '../../auth/controllers/auth_controller.dart';
@@ -103,9 +102,7 @@ class EditController extends GetxController {
       }
 
       try {
-        String itemId = const Uuid().v1();
-
-        await uploadFiles(itemId).then((value) async {
+        await uploadFiles(itemController.itemModel!.itemId).then((value) async {
           ItemModel itemModel = ItemModel(
             pushedDescription: '',
             isPushedToSale: false,
@@ -113,7 +110,7 @@ class EditController extends GetxController {
             vendorProfilePicUrl: authController.currentProfilePic.value,
             description: descriptionController.text,
             vendorUid: authController.currentUserUID.value,
-            itemId: itemId,
+            itemId: itemController.itemModel!.itemId,
             datePublished: DateTime.now(),
             draftImageLinks: draftImagesLinks,
             pushedImageLinks: [],
@@ -132,11 +129,18 @@ class EditController extends GetxController {
 
           await firestore
               .collection('items')
-              .doc(itemId)
-              .set(itemModel.toJson());
+              .doc(itemController.itemModel!.itemId)
+              .delete()
+              .then((value) async {
+            await firestore
+                .collection('items')
+                .doc(itemController.itemModel!.itemId)
+                .set(itemModel.toJson());
+          });
 
           Get.snackbar("Success", "Uploads successful!");
           clearVars();
+          Get.offAll(() => HomePage());
           homeController.fetchPosts();
         });
       } catch (e) {

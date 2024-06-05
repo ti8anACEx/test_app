@@ -39,6 +39,15 @@ class ProductDetailsPage extends StatelessWidget {
             Padding(
               padding: const EdgeInsets.all(6),
               child: const Icon(
+                Icons.delete,
+                color: blackColor,
+              ).onTap(() {
+                itemController.deleteItem(context);
+              }),
+            ),
+            Padding(
+              padding: const EdgeInsets.all(6),
+              child: const Icon(
                 Icons.edit,
                 color: blackColor,
               ).onTap(() {
@@ -159,8 +168,10 @@ class ProductDetailsPage extends StatelessWidget {
                                     itemController.itemModel!.draftProductName +
                                     ', Desc: ' +
                                     itemController.itemModel!.description +
-                                    '&image=' +
-                                    encodedImageUrl +
+                                    '''
+*Image Links*
+$encodedImageUrl
+''' +
                                     APIs.whatsappLink6;
                                 launchTheUrl(url);
                               },
@@ -172,6 +183,9 @@ class ProductDetailsPage extends StatelessWidget {
                             ),
                             ElevatedButton(
                               onPressed: () async {
+                                String encodedImageUrl = Uri.encodeFull(
+                                    itemController
+                                        .itemModel!.draftImageLinks[0]);
                                 // ignore: prefer_interpolation_to_compose_strings
                                 String url = APIs.whatsappLink1 +
                                     APIs.whatsappLink2 +
@@ -182,9 +196,10 @@ class ProductDetailsPage extends StatelessWidget {
                                     itemController.itemModel!.draftProductName +
                                     ', Desc: ' +
                                     itemController.itemModel!.description +
-                                    '*Product Image Link:* ' +
-                                    itemController
-                                        .itemModel!.draftImageLinks[0] +
+                                    '''
+*Image Links*
+$encodedImageUrl
+''' +
                                     APIs.whatsappLink6;
                                 launchTheUrl(url);
                               },
@@ -291,8 +306,10 @@ class ProductDetailsPage extends StatelessWidget {
                                 itemController.itemModel!.draftProductName +
                                 ', Desc: ' +
                                 itemController.itemModel!.description +
-                                '&image=' +
-                                encodedImageUrl +
+                                '''
+*Image Links*
+$encodedImageUrl
+''' +
                                 APIs.whatsappLink6;
                             launchTheUrl(url);
                           },
@@ -304,6 +321,8 @@ class ProductDetailsPage extends StatelessWidget {
                         ),
                         ElevatedButton(
                           onPressed: () async {
+                            String encodedImageUrl = Uri.encodeFull(
+                                itemController.itemModel!.draftImageLinks[0]);
                             // ignore: prefer_interpolation_to_compose_strings
                             String url = APIs.whatsappLink1 +
                                 APIs.whatsappLink2 +
@@ -313,8 +332,10 @@ class ProductDetailsPage extends StatelessWidget {
                                 itemController.itemModel!.draftProductName +
                                 ', Desc: ' +
                                 itemController.itemModel!.description +
-                                '*Product Image Link:* ' +
-                                itemController.itemModel!.draftImageLinks[0] +
+                                '''
+*Image Links*
+$encodedImageUrl
+''' +
                                 APIs.whatsappLink6;
                             launchTheUrl(url);
                           },

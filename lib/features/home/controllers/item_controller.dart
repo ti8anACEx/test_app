@@ -1,10 +1,13 @@
 import 'dart:developer';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_storage/firebase_storage.dart';
+import 'package:flutter/material.dart';
 import 'package:get/get.dart';
+import 'package:test_app/constants/colors.dart';
 import 'package:test_app/features/home/controllers/home_controller.dart';
 import 'package:test_app/features/home/pages/home_page.dart';
 import 'package:test_app/models/item_model.dart';
+import 'package:velocity_x/velocity_x.dart';
 
 class ItemController extends GetxController {
   ItemModel? itemModel;
@@ -51,6 +54,43 @@ class ItemController extends GetxController {
       };
       await updateItemFields(fieldsToUpdate, itemController);
     });
+  }
+
+  Future<void> deleteItem(BuildContext context) async {
+    try {
+      showModalBottomSheet(
+        context: context,
+        builder: (context) {
+          return Column(
+            mainAxisSize: MainAxisSize.min,
+            children: [
+              20.heightBox,
+              "Do you want to delete this item?".text.bold.make(),
+              20.heightBox,
+              Row(
+                mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+                children: [
+                  "No".text.color(greenColor.withOpacity(0.5)).make(),
+                  "Yes".text.color(redColor).make().onTap(() {
+                    FirebaseFirestore.instance
+                        .collection('items')
+                        .doc(itemModel!.itemId)
+                        .delete()
+                        .then((value) {
+                      Get.offAll(() => HomePage());
+                      homeController.fetchPosts();
+                    });
+                  }),
+                ],
+              ),
+              20.heightBox,
+            ],
+          );
+        },
+      );
+    } catch (e) {
+      Get.snackbar('erroe', e.toString());
+    }
   }
 
   Future<void> removeFiles(ItemController itemController) async {

@@ -50,19 +50,21 @@ class LoginPage extends StatelessWidget {
                   isObscured: true,
                   controller: authController.passwordController),
               100.heightBox,
-              authController.isLoading.value
-                  ? customProgressIndicator()
-                  : CustomButton(
-                      text: "Get OTP",
-                      trailingWidget: const Icon(
-                        Icons.arrow_forward_ios,
-                        color: whiteColor,
+              Obx(
+                () => authController.isLoading.value
+                    ? Container()
+                    : CustomButton(
+                        text: "Get OTP",
+                        trailingWidget: const Icon(
+                          Icons.arrow_forward_ios,
+                          color: whiteColor,
+                        ),
+                        onTap: () async {
+                          await authController.getOTP();
+                        },
+                        color: pinkColor,
                       ),
-                      onTap: () async {
-                        await authController.getOTP();
-                      },
-                      color: pinkColor,
-                    ),
+              ),
               50.heightBox,
             ],
           ),
