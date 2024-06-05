@@ -52,7 +52,7 @@ class LoginPage extends StatelessWidget {
               100.heightBox,
               Obx(
                 () => authController.isLoading.value
-                    ? Container()
+                    ? customProgressIndicator()
                     : CustomButton(
                         text: "Get OTP",
                         trailingWidget: const Icon(

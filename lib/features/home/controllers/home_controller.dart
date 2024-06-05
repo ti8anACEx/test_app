@@ -8,6 +8,8 @@ import 'package:test_app/features/product_details/pages/product_details_page.dar
 import 'package:test_app/features/upload/pages/upload_page.dart';
 import 'package:velocity_x/velocity_x.dart';
 
+import '../../upload/pages/upload_carousel_images_page.dart';
+
 class HomeController extends GetxController {
   RxString currentTag = ''.obs;
   TextEditingController searchController = TextEditingController();
@@ -35,6 +37,10 @@ class HomeController extends GetxController {
     } else {
       currentTag.value = text;
     }
+  }
+
+  void addCarouselImages() {
+    Get.to(() => UploadCarouselImagesPage());
   }
 
   void addItem() {

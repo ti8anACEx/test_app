@@ -271,7 +271,7 @@ class AuthController extends GetxController {
         Get.snackbar("Error Logging in", "Please fill up all the blocks");
       }
     } catch (e) {
-      Get.snackbar("Error Logging in", '');
+      Get.snackbar("Error Logging in", e.toString());
     } finally {
       isLoading.value = false;
     }

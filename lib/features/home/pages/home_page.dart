@@ -23,13 +23,27 @@ class HomePage extends StatelessWidget {
   Widget build(BuildContext context) {
     return SafeArea(
       child: Scaffold(
-          floatingActionButton: FloatingActionButton(
-            elevation: 11,
-            onPressed: () {
-              homeController.addItem();
-            },
-            backgroundColor: darkPinkColor,
-            child: const Icon(Icons.add, size: 30),
+          floatingActionButton: Column(
+            mainAxisAlignment: MainAxisAlignment.end,
+            children: [
+              FloatingActionButton(
+                elevation: 11,
+                onPressed: () {
+                  homeController.addCarouselImages();
+                },
+                backgroundColor: darkPinkColor,
+                child: const Icon(Icons.image_outlined, size: 30),
+              ),
+              5.heightBox,
+              FloatingActionButton(
+                elevation: 11,
+                onPressed: () {
+                  homeController.addItem();
+                },
+                backgroundColor: darkPinkColor,
+                child: const Icon(Icons.add, size: 30),
+              ),
+            ],
           ),
           body: Column(
             crossAxisAlignment: CrossAxisAlignment.start,
