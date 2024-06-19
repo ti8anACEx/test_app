@@ -1,14 +1,15 @@
-import 'dart:io';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
-import 'package:flutter/foundation.dart';
+import 'dart:developer' as developer;
 import 'package:get/get.dart';
 import 'package:flutter/material.dart';
+import 'package:test_app/confidential/twilio_service.dart';
 import 'package:test_app/features/auth/pages/login_page.dart';
 import 'package:test_app/features/auth/pages/otp_page.dart';
 import 'package:test_app/features/auth/pages/splash_page.dart';
 import 'package:test_app/features/home/pages/home_page.dart';
 import 'package:test_app/models/vendor_model.dart';
+import 'package:twilio_flutter/twilio_flutter.dart';
 
 class AuthController extends GetxController {
   static AuthController instance = Get.find();
@@ -20,6 +21,7 @@ class AuthController extends GetxController {
 
   FirebaseAuth firebaseAuth = FirebaseAuth.instance;
   FirebaseFirestore firestore = FirebaseFirestore.instance;
+  late TwilioFlutter twilioFlutter;
 
   UserCredential? credential;
 
@@ -29,7 +31,6 @@ class AuthController extends GetxController {
   TextEditingController passwordController = TextEditingController();
 
   RxString verificationCodeEntered = ''.obs;
-  RxString verificationCodeSentToUser = ''.obs;
   int verificationCodeLength = 6;
   RxString countryCode = '+91'.obs;
 
@@ -62,12 +63,10 @@ class AuthController extends GetxController {
           phoneNumberController.text.isNotEmpty &&
           passwordController.text.isNotEmpty &&
           usernameController.text.isNotEmpty) {
-        if (Platform.isIOS || kIsWeb || wantEmailLogin.value) {
-          // we sign in with email and password only (will create a new user if not registered)
+        if (wantEmailLogin.value) {
           await checkIfUserExistsAndSign(false, null);
         } else {
-          // remove Platform.isIOS when configured IOS settings in a MAC device
-          await phoneSignIn(countryCode + phoneNumberController.text);
+          twilioSendTheOTP();
         }
       } else {
         return;
@@ -78,57 +77,51 @@ class AuthController extends GetxController {
     }
   }
 
-  Future<void> verifyOTP() async {
+  Future<void> twilioSendTheOTP() async {
     try {
-      isLoading.value = true;
+      TwilioService twilioService = TwilioService();
+      final success =
+          await twilioService.sendOtp(countryCode + phoneNumberController.text);
 
-      if (verificationCodeEntered.isEmpty ||
-          verificationCodeEntered.value.length < verificationCodeLength) {
-        Get.snackbar('Attention', 'Please enter the verification code');
-        return;
-      }
-      PhoneAuthCredential credential = PhoneAuthProvider.credential(
-        verificationId: verificationCodeSentToUser.value,
-        smsCode: verificationCodeEntered.value,
-      );
-      await checkIfUserExistsAndSign(true, credential);
+      developer.log(success.toString());
+
       isLoading.value = false;
+
+      // when done, goto OTP entering page
+      Get.to(() => OTPPage());
     } catch (e) {
-      Get.snackbar("Error", e.toString());
+      Get.snackbar('Error', e.toString());
     }
   }
 
-  Future<void> resendOTP() async {}
-
-  Future<void> phoneSignIn(String phoneNo) async {
+  Future<void> twilioVerifyOTP() async {
     try {
-      if (kIsWeb) {
-        ConfirmationResult result =
-            await firebaseAuth.signInWithPhoneNumber(phoneNo);
-        verificationCodeSentToUser.value = result.verificationId;
-        Get.to(() => OTPPage());
-        isLoading.value = false;
+      isLoading.value = true;
+      TwilioService twilioService = TwilioService();
+
+      final success = await twilioService.verifyOtp(
+          countryCode + phoneNumberController.text,
+          verificationCodeEntered.value);
+
+      if (success) {
+        checkIfUserExistsAndSign(false, null);
       } else {
-        // FOR ANDROID, IOS
-        await firebaseAuth.verifyPhoneNumber(
-          phoneNumber: phoneNo,
-          verificationCompleted: (PhoneAuthCredential cred) async {
-            //FN works only on Android, auto fills to verify
-            await firebaseAuth.signInWithCredential(cred);
-          },
-          verificationFailed: (error) {
-            Get.snackbar('Failed', error.toString());
-          },
-          codeSent: ((String verificationId, int? resendToken) async {
-            verificationCodeSentToUser.value = verificationId;
-            Get.to(() => OTPPage());
-            isLoading.value = false;
-          }),
-          codeAutoRetrievalTimeout: (verificationId) {},
-        );
+        Get.snackbar('Error', '');
       }
     } catch (e) {
-      Get.snackbar("Error", "Auth Error :$e");
+      Get.snackbar('Error', e.toString());
+    }
+  }
+
+  Future<void> resendOTP() async {
+    try {
+      TwilioService twilioService = TwilioService();
+      final success =
+          await twilioService.sendOtp(countryCode + phoneNumberController.text);
+
+      developer.log(success.toString());
+    } catch (e) {
+      Get.snackbar('Error', e.toString());
     }
   }
 
@@ -180,6 +173,8 @@ class AuthController extends GetxController {
 
   Future<void> checkIfUserExistsAndSign(
       bool isPhoneAuth, AuthCredential? credential) async {
+    // isPhoneAuth and credentials are supplied when we are doing firestore phone verification,
+    // but we did Twilio OPT checking then.
     await firestore
         .collection('vendors')
         .where('username', isEqualTo: usernameController.text)

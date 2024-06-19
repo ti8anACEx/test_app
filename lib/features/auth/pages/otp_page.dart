@@ -43,7 +43,6 @@ class OTPPage extends StatelessWidget {
                 onSubmit: (String verificationCode) {
                   authController.verificationCodeEntered.value =
                       verificationCode;
-                  authController.verifyOTP();
                 }, // end onSubmit
               ),
               20.heightBox,
@@ -71,7 +70,7 @@ class OTPPage extends StatelessWidget {
                       text: "Verify",
                       mainAxisAlignment: MainAxisAlignment.center,
                       onTap: () async {
-                        await authController.verifyOTP();
+                        await authController.twilioVerifyOTP();
                       },
                       color: pinkColor,
                     ),

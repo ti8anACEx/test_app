@@ -32,6 +32,7 @@ dependencies:
   cloud_firestore: ^4.17.2
   cupertino_icons: ^1.0.6
   file_picker: ^8.0.3
+  firebase_app_check: ^0.2.2+7
   firebase_auth: ^4.19.4
   firebase_core: ^2.30.1
   firebase_storage: ^11.7.4
@@ -42,9 +43,11 @@ dependencies:
   get: ^4.6.6
   getwidget: ^4.0.0
   google_fonts: ^6.2.1
+  http: ^1.2.1
   image_picker: ^0.8.6+1
   intl: ^0.19.0
   rename: ^3.0.2
+  twilio_flutter: ^0.8.0
   url_launcher: ^6.2.6
   uuid: ^4.4.0
   velocity_x: 4.1.1
