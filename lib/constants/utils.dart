@@ -41,7 +41,7 @@ void pushNamedAndRemoveUntilNoArgs(BuildContext context, String routeName) {
 
 // ORCA_CHAIN ID GENERATOR
 
-String orcaChainIdGenerator() {
+String chainIdGenerator() {
   String currentDate = DateTime.now().toString().substring(8, 10) +
       DateTime.now().toString().substring(5, 7) +
       DateTime.now().toString().substring(2, 4);

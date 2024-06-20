@@ -9,6 +9,8 @@ import 'package:test_app/features/home/pages/home_page.dart';
 import 'package:test_app/models/item_model.dart';
 import 'package:velocity_x/velocity_x.dart';
 
+import '../../../commons/widgets/custom_snackbar.dart';
+
 class ItemController extends GetxController {
   ItemModel? itemModel;
   HomeController homeController = Get.find(tag: 'home-controller');
@@ -89,7 +91,7 @@ class ItemController extends GetxController {
         },
       );
     } catch (e) {
-      Get.snackbar('erroe', e.toString());
+      CustomSnackbar.show('erroe', e.toString());
     }
   }
 
@@ -106,9 +108,9 @@ class ItemController extends GetxController {
       await Future.forEach(listResult.items, (Reference item) async {
         await item.delete();
       });
-      Get.snackbar('Success', 'Revoked the item from sale');
+      CustomSnackbar.show('Success', 'Revoked the item from sale');
     } catch (e) {
-      Get.snackbar('Erroe', 'Failed to remove the item from sale');
+      CustomSnackbar.show('Erroe', 'Failed to remove the item from sale');
     } finally {
       isDeleting.value = false;
     }
@@ -123,7 +125,7 @@ class ItemController extends GetxController {
           .doc(itemController.itemModel!.itemId);
       await itemRef.update(fieldsToUpdate);
       itemController.isPushedToSale.value = true;
-      Get.snackbar('Success', 'Revoked successfully!');
+      CustomSnackbar.show('Success', 'Revoked successfully!');
       itemController.isPushedToSale.value = false;
 
       homeController.fetchPosts();

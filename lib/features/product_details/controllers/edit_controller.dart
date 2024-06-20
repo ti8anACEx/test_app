@@ -11,6 +11,7 @@ import 'package:image_picker/image_picker.dart';
 import 'package:test_app/features/home/controllers/item_controller.dart';
 import 'package:test_app/features/home/pages/home_page.dart';
 
+import '../../../commons/widgets/custom_snackbar.dart';
 import '../../../models/item_model.dart';
 import '../../auth/controllers/auth_controller.dart';
 import '../../home/controllers/home_controller.dart';
@@ -76,7 +77,7 @@ class EditController extends GetxController {
         }
       }
     } catch (e) {
-      Get.snackbar("Error", e.toString());
+      CustomSnackbar.show("Error", e.toString());
     }
   }
 
@@ -89,7 +90,7 @@ class EditController extends GetxController {
       final imageBytes = await File(image!.path).readAsBytes();
       draftImagesAsBytes.add(imageBytes);
     } catch (e) {
-      Get.snackbar("Error", e.toString());
+      CustomSnackbar.show("Error", e.toString());
     }
   }
 
@@ -138,18 +139,18 @@ class EditController extends GetxController {
                 .set(itemModel.toJson());
           });
 
-          Get.snackbar("Success", "Uploads successful!");
+          CustomSnackbar.show("Success", "Uploads successful!");
           clearVars();
           Get.offAll(() => HomePage());
           homeController.fetchPosts();
         });
       } catch (e) {
-        Get.snackbar("Error", e.toString());
+        CustomSnackbar.show("Error", e.toString());
       } finally {
         isLoading.value = false;
       }
     } else {
-      Get.snackbar("Failed", "Make sure to enter all fields properly");
+      CustomSnackbar.show("Failed", "Make sure to enter all fields properly");
       isLoading.value = false;
     }
   }
@@ -173,7 +174,7 @@ class EditController extends GetxController {
         draftImagesLinks.add(downloadURL);
       }
     } catch (e) {
-      Get.snackbar("Error", e.toString());
+      CustomSnackbar.show("Error", e.toString());
     } finally {
       isUploadingFiles.value = false;
     }
@@ -243,7 +244,7 @@ class EditController extends GetxController {
         draftImagesLinks.add(downloadURL);
       }
     } catch (e) {
-      Get.snackbar("Error", e.toString());
+      CustomSnackbar.show("Error", e.toString());
     } finally {
       isUploadingFiles.value = false;
     }
@@ -257,7 +258,7 @@ class EditController extends GetxController {
           .doc(itemController.itemModel!.itemId);
       await itemRef.update(fieldsToUpdate);
       itemController.isPushedToSale.value = true;
-      Get.snackbar('Success', 'Pushed to sale successfully!');
+      CustomSnackbar.show('Success', 'Pushed to sale successfully!');
 
       Get.offAll(HomePage());
 

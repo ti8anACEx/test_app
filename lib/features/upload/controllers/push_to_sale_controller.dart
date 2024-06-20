@@ -14,6 +14,8 @@ import 'package:test_app/features/home/controllers/item_controller.dart';
 import 'package:test_app/features/home/pages/home_page.dart';
 import 'package:velocity_x/velocity_x.dart';
 
+import '../../../commons/widgets/custom_snackbar.dart';
+
 class PushToSaleController extends GetxController {
   TextEditingController rateController = TextEditingController();
   TextEditingController dateController = TextEditingController();
@@ -54,7 +56,7 @@ class PushToSaleController extends GetxController {
         }
       }
     } catch (e) {
-      Get.snackbar("Error", e.toString());
+      CustomSnackbar.show("Error", e.toString());
     }
   }
 
@@ -67,7 +69,7 @@ class PushToSaleController extends GetxController {
       final imageBytes = await File(image!.path).readAsBytes();
       pushedImagesAsBytes.add(imageBytes);
     } catch (e) {
-      Get.snackbar("Error", e.toString());
+      CustomSnackbar.show("Error", e.toString());
     }
   }
 
@@ -95,7 +97,7 @@ class PushToSaleController extends GetxController {
         };
         await updateItemFields(fieldsToUpdate);
       } else {
-        Get.snackbar('Failed', 'Fill all the fields');
+        CustomSnackbar.show('Failed', 'Fill all the fields');
       }
     });
   }
@@ -118,7 +120,7 @@ class PushToSaleController extends GetxController {
         pushedImageLinks.add(downloadURL);
       }
     } catch (e) {
-      Get.snackbar("Error", e.toString());
+      CustomSnackbar.show("Error", e.toString());
     } finally {
       isUploadingFiles.value = false;
     }
@@ -132,7 +134,7 @@ class PushToSaleController extends GetxController {
           .doc(itemController.itemModel!.itemId);
       await itemRef.update(fieldsToUpdate);
       itemController.isPushedToSale.value = true;
-      Get.snackbar('Success', 'Pushed to sale successfully!');
+      CustomSnackbar.show('Success', 'Pushed to sale successfully!');
 
       await homeController.fetchPosts();
       itemController.pushedDate.value = dateController.text;

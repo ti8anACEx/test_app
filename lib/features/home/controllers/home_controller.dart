@@ -8,6 +8,7 @@ import 'package:test_app/features/product_details/pages/product_details_page.dar
 import 'package:test_app/features/upload/pages/upload_page.dart';
 import 'package:velocity_x/velocity_x.dart';
 
+import '../../../commons/widgets/custom_snackbar.dart';
 import '../../upload/pages/upload_carousel_images_page.dart';
 
 class HomeController extends GetxController {
@@ -64,7 +65,7 @@ class HomeController extends GetxController {
           .compareTo(a['datePublished'] as Timestamp));
       isLoading.value = false;
     } catch (e) {
-      Get.snackbar("Error", 'Failed to load posts');
+      CustomSnackbar.show("Error", 'Failed to load posts');
     }
   }
 
@@ -85,7 +86,7 @@ class HomeController extends GetxController {
             .contains(searchController.text.toLowerCase()));
       }).toList();
     } catch (e) {
-      Get.snackbar("Error", 'Failed to load items $e');
+      CustomSnackbar.show("Error", 'Failed to load items $e');
     }
   }
 
@@ -176,7 +177,7 @@ class HomeController extends GetxController {
       // Update searchedItems with the filtered and sorted documents
       searchedItems.value = filteredDocuments;
     } catch (e) {
-      Get.snackbar("Error", 'Failed to load items $e');
+      CustomSnackbar.show("Error", 'Failed to load items $e');
     }
   }
 

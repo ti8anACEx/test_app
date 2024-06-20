@@ -10,6 +10,8 @@ import 'package:test_app/features/auth/controllers/auth_controller.dart';
 import 'package:test_app/features/home/controllers/home_controller.dart';
 import 'package:uuid/uuid.dart';
 
+import '../../../commons/widgets/custom_snackbar.dart';
+
 class UploadCarouselsController extends GetxController {
   RxList<Uint8List> carouselImagesAsBytes = <Uint8List>[].obs;
   RxList<String> carouselImagesLinks = <String>[].obs;
@@ -45,7 +47,7 @@ class UploadCarouselsController extends GetxController {
         }
       }
     } catch (e) {
-      Get.snackbar("Error", e.toString());
+      CustomSnackbar.show("Error", e.toString());
     }
   }
 
@@ -58,7 +60,7 @@ class UploadCarouselsController extends GetxController {
       final imageBytes = await File(image!.path).readAsBytes();
       carouselImagesAsBytes.add(imageBytes);
     } catch (e) {
-      Get.snackbar("Error", e.toString());
+      CustomSnackbar.show("Error", e.toString());
     }
   }
 
@@ -79,16 +81,16 @@ class UploadCarouselsController extends GetxController {
               .doc(authController.currentUserUID.value)
               .update({'carouselImages': carouselImagesLinks});
 
-          Get.snackbar("Success", "Uploads successful!");
+          CustomSnackbar.show("Success", "Uploads successful!");
           homeController.fetchPosts();
         });
       } catch (e) {
-        Get.snackbar("Error", e.toString());
+        CustomSnackbar.show("Error", e.toString());
       } finally {
         isLoading.value = false;
       }
     } else {
-      Get.snackbar("Failed", "Make sure to enter all fields properly");
+      CustomSnackbar.show("Failed", "Make sure to enter all fields properly");
       isLoading.value = false;
     }
   }
@@ -111,7 +113,7 @@ class UploadCarouselsController extends GetxController {
         carouselImagesLinks.add(downloadURL);
       }
     } catch (e) {
-      Get.snackbar("Error", e.toString());
+      CustomSnackbar.show("Error", e.toString());
     } finally {
       isUploadingFiles.value = false;
     }

@@ -11,6 +11,8 @@ import 'package:test_app/features/home/pages/home_page.dart';
 import 'package:test_app/models/vendor_model.dart';
 import 'package:twilio_flutter/twilio_flutter.dart';
 
+import '../../../commons/widgets/custom_snackbar.dart';
+
 class AuthController extends GetxController {
   static AuthController instance = Get.find();
   RxBool isLoading = false.obs;
@@ -42,7 +44,8 @@ class AuthController extends GetxController {
 
   void toggleWantEmailLogin() {
     wantEmailLogin.toggle();
-    Get.snackbar("User wants Email Login", wantEmailLogin.value ? "Yes" : "No");
+    CustomSnackbar.show(
+        "User wants Email Login", wantEmailLogin.value ? "Yes" : "No");
   }
 
   void toggleToTestCountryCode() {
@@ -52,7 +55,7 @@ class AuthController extends GetxController {
     } else {
       countryCode.value = "+91";
     }
-    Get.snackbar("CountryCodeChanged", countryCode.value);
+    CustomSnackbar.show("CountryCodeChanged", countryCode.value);
   }
 
   Future<void> getOTP() async {
@@ -73,7 +76,7 @@ class AuthController extends GetxController {
       }
     } catch (e) {
       isLoading.value = false;
-      Get.snackbar("error", e.toString());
+      CustomSnackbar.show("error", e.toString());
     }
   }
 
@@ -90,7 +93,7 @@ class AuthController extends GetxController {
       // when done, goto OTP entering page
       Get.to(() => OTPPage());
     } catch (e) {
-      Get.snackbar('Error', e.toString());
+      CustomSnackbar.show('Error', e.toString());
     }
   }
 
@@ -99,17 +102,33 @@ class AuthController extends GetxController {
       isLoading.value = true;
       TwilioService twilioService = TwilioService();
 
-      final success = await twilioService.verifyOtp(
+      final responseData = await twilioService.verifyOtp(
           countryCode + phoneNumberController.text,
           verificationCodeEntered.value);
 
-      if (success) {
+      if (responseData == 'approved') {
         checkIfUserExistsAndSign(false, null);
       } else {
-        Get.snackbar('Error', '');
+        responseData == 'expired'
+            ? CustomSnackbar.show(
+                'Session Expired', 'Please request to resend the OTP')
+            : responseData == 'failed'
+                ? CustomSnackbar.show(
+                    'Failed', 'An internal error has occurred')
+                : responseData == 'deleted'
+                    ? CustomSnackbar.show('Deleted',
+                        'The OTP has been removed, please click on resend OTP')
+                    : responseData == 'canceled'
+                        ? CustomSnackbar.show(
+                            'Canceled', 'Please click on resend OTP')
+                        : responseData == 'max_attempts_reached'
+                            ? CustomSnackbar.show('Attention',
+                                'Max attempt reached. Please try again later!')
+                            : Container();
       }
     } catch (e) {
-      Get.snackbar('Error', e.toString());
+      CustomSnackbar.show('Error',
+          'Invalid OTP. Please enter a valid OTP ot try requesting the OTP again');
     }
   }
 
@@ -121,7 +140,7 @@ class AuthController extends GetxController {
 
       developer.log(success.toString());
     } catch (e) {
-      Get.snackbar('Error', e.toString());
+      CustomSnackbar.show('Error', e.toString());
     }
   }
 
@@ -167,7 +186,7 @@ class AuthController extends GetxController {
         }
       });
     } catch (e) {
-      Get.snackbar('', '"Error occured while loading details"');
+      CustomSnackbar.show('', '"Error occured while loading details"');
     }
   }
 
@@ -177,7 +196,6 @@ class AuthController extends GetxController {
     // but we did Twilio OPT checking then.
     await firestore
         .collection('vendors')
-        .where('username', isEqualTo: usernameController.text)
         .where('email', isEqualTo: emailController.text)
         .get()
         .then((QuerySnapshot snapshot) {
@@ -187,17 +205,15 @@ class AuthController extends GetxController {
         } else {
           signInUser();
         }
-        isLoading.value = false;
       } else {
         if (isPhoneAuth) {
           signUpUserWithPhone(credential!);
         } else {
           signUpUser();
         }
-        isLoading.value = false;
       }
     }).catchError((e) {
-      Get.snackbar('Error', "Failed to fetch details");
+      CustomSnackbar.show('Error', "Failed to fetch details");
     });
   }
 
@@ -233,15 +249,15 @@ class AuthController extends GetxController {
             .doc(currentUserUID.value)
             .set(vendorModel.toJson());
 
-        Get.snackbar("Account Created",
+        CustomSnackbar.show("Account Created",
             "Wassup ${currentUsername.value}, have a great time here!");
         Get.offAll(() => HomePage(), transition: Transition.circularReveal);
       } else {
-        Get.snackbar("Failed Creating Account",
+        CustomSnackbar.show("Failed Creating Account",
             "Please make sure you have filled all the details");
       }
     } catch (e) {
-      Get.snackbar("Error Creating Account",
+      CustomSnackbar.show("Error Creating Account",
           "Please make sure you have filled all the details $e");
     } finally {
       isLoading.value = false;
@@ -260,13 +276,14 @@ class AuthController extends GetxController {
             email: emailController.text.trim(),
             password: passwordController.text.trim());
 
-        Get.snackbar("Success", "Logged in successfully");
+        CustomSnackbar.show("Success", "Logged in successfully");
         Get.offAll(() => HomePage(), transition: Transition.circularReveal);
       } else {
-        Get.snackbar("Error Logging in", "Please fill up all the blocks");
+        CustomSnackbar.show(
+            "Error Logging in", "Please fill up all the blocks");
       }
     } catch (e) {
-      Get.snackbar("Error Logging in", e.toString());
+      CustomSnackbar.show("Error Logging in", e.toString());
     } finally {
       isLoading.value = false;
     }
@@ -301,15 +318,15 @@ class AuthController extends GetxController {
             .doc(currentUserUID.value)
             .set(vendorModel.toJson());
 
-        Get.snackbar("Account Created",
+        CustomSnackbar.show("Account Created",
             "Wassup ${currentUsername.value}, have a great time here!");
         Get.offAll(() => HomePage(), transition: Transition.circularReveal);
       } else {
-        Get.snackbar("Failed Creating Account",
+        CustomSnackbar.show("Failed Creating Account",
             "Please make sure you have filled all the details");
       }
     } catch (e) {
-      Get.snackbar("Error Creating Account",
+      CustomSnackbar.show("Error Creating Account",
           "Please make sure you have filled all the details $e");
     } finally {
       isLoading.value = false;
@@ -324,13 +341,14 @@ class AuthController extends GetxController {
           phoneNumberController.text.isNotEmpty &&
           passwordController.text.isNotEmpty) {
         await firebaseAuth.signInWithCredential(credential);
-        Get.snackbar("Success", "Logged in successfully");
+        CustomSnackbar.show("Success", "Logged in successfully");
         Get.offAll(() => HomePage(), transition: Transition.circularReveal);
       } else {
-        Get.snackbar("Error Logging in", "Please fill up all the blocks");
+        CustomSnackbar.show(
+            "Error Logging in", "Please fill up all the blocks");
       }
     } catch (e) {
-      Get.snackbar("Error Logging in", '');
+      CustomSnackbar.show("Error Logging in", '');
     } finally {
       isLoading.value = false;
     }

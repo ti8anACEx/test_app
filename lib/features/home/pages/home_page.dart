@@ -1,4 +1,5 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_staggered_grid_view/flutter_staggered_grid_view.dart';
 import 'package:get/get.dart';
@@ -48,9 +49,9 @@ class HomePage extends StatelessWidget {
           body: Column(
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
-              // "Logout".text.make().onTap(() async {
-              //   await FirebaseAuth.instance.signOut();
-              // }),
+              "Logout".text.make().onTap(() async {
+                await FirebaseAuth.instance.signOut();
+              }),
               Container(
                 decoration: BoxDecoration(
                   color: textfieldGrey.withOpacity(0.8),

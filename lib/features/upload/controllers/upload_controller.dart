@@ -12,6 +12,8 @@ import 'package:test_app/features/home/controllers/home_controller.dart';
 import 'package:test_app/models/item_model.dart';
 import 'package:uuid/uuid.dart';
 
+import '../../../commons/widgets/custom_snackbar.dart';
+
 class UploadController extends GetxController {
   TextEditingController rateController = TextEditingController();
   TextEditingController dateController = TextEditingController();
@@ -57,7 +59,7 @@ class UploadController extends GetxController {
         }
       }
     } catch (e) {
-      Get.snackbar("Error", e.toString());
+      CustomSnackbar.show("Error", e.toString());
     }
   }
 
@@ -70,7 +72,7 @@ class UploadController extends GetxController {
       final imageBytes = await File(image!.path).readAsBytes();
       draftImagesAsBytes.add(imageBytes);
     } catch (e) {
-      Get.snackbar("Error", e.toString());
+      CustomSnackbar.show("Error", e.toString());
     }
   }
 
@@ -115,17 +117,17 @@ class UploadController extends GetxController {
               .doc(itemId)
               .set(itemModel.toJson());
 
-          Get.snackbar("Success", "Uploads successful!");
+          CustomSnackbar.show("Success", "Uploads successful!");
           clearVars();
           homeController.fetchPosts();
         });
       } catch (e) {
-        Get.snackbar("Error", e.toString());
+        CustomSnackbar.show("Error", e.toString());
       } finally {
         isLoading.value = false;
       }
     } else {
-      Get.snackbar("Failed", "Make sure to enter all fields properly");
+      CustomSnackbar.show("Failed", "Make sure to enter all fields properly");
       isLoading.value = false;
     }
   }
@@ -149,7 +151,7 @@ class UploadController extends GetxController {
         draftImagesLinks.add(downloadURL);
       }
     } catch (e) {
-      Get.snackbar("Error", e.toString());
+      CustomSnackbar.show("Error", e.toString());
     } finally {
       isUploadingFiles.value = false;
     }

@@ -1,6 +1,8 @@
 import 'dart:convert';
 import 'dart:developer' as developer;
+import 'package:flutter/material.dart';
 import 'package:http/http.dart' as http;
+import 'package:test_app/commons/widgets/custom_snackbar.dart';
 
 class TwilioService {
   final String accountSid = 'AC307c86aed594eb6535d430e9d9d1c7ff';
@@ -29,7 +31,7 @@ class TwilioService {
     return response.statusCode == 201;
   }
 
-  Future<bool> verifyOtp(String phoneNumber, String code) async {
+  Future<String> verifyOtp(String phoneNumber, String code) async {
     final url =
         'https://verify.twilio.com/v2/Services/$serviceSid/VerificationCheck';
     final response = await http.post(
@@ -45,6 +47,7 @@ class TwilioService {
     developer.log('Verify OTP response body: ${response.body}');
 
     final responseData = jsonDecode(response.body);
-    return responseData['status'] == 'approved';
+
+    return responseData['status'];
   }
 }
