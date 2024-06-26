@@ -7,6 +7,7 @@ import 'package:test_app/commons/widgets/custom_progress_indicator.dart';
 import 'package:test_app/commons/widgets/custom_search_bar.dart';
 import 'package:test_app/constants/colors.dart';
 import 'package:test_app/constants/lists.dart';
+import 'package:test_app/features/auth/controllers/auth_controller.dart';
 import 'package:test_app/features/home/controllers/home_controller.dart';
 import 'package:test_app/features/home/controllers/item_controller.dart';
 import 'package:test_app/features/home/widgets/item_card.dart';
@@ -19,6 +20,7 @@ class HomePage extends StatelessWidget {
 
   HomeController homeController =
       Get.put(HomeController(), tag: 'home-controller');
+  AuthController authController = Get.find(tag: 'auth-controller');
 
   @override
   Widget build(BuildContext context) {
@@ -28,6 +30,7 @@ class HomePage extends StatelessWidget {
             mainAxisAlignment: MainAxisAlignment.end,
             children: [
               FloatingActionButton(
+                heroTag: 'btn1',
                 elevation: 11,
                 onPressed: () {
                   homeController.addCarouselImages();
@@ -37,6 +40,7 @@ class HomePage extends StatelessWidget {
               ),
               5.heightBox,
               FloatingActionButton(
+                heroTag: 'btn2',
                 elevation: 11,
                 onPressed: () {
                   homeController.addItem();
@@ -49,9 +53,9 @@ class HomePage extends StatelessWidget {
           body: Column(
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
-              "Logout".text.make().onTap(() async {
-                await FirebaseAuth.instance.signOut();
-              }),
+              // "Logout".text.make().onTap(() async {
+              //   await FirebaseAuth.instance.signOut();
+              // }),
               Container(
                 decoration: BoxDecoration(
                   color: textfieldGrey.withOpacity(0.8),
@@ -64,7 +68,35 @@ class HomePage extends StatelessWidget {
                 child: Column(
                   children: [
                     // Search Bar
-                    15.heightBox,
+                    Padding(
+                      padding:
+                          const EdgeInsets.only(right: 10, top: 2, left: 10),
+                      child: Row(
+                        mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                        children: [
+                          Obx(
+                            () => authController.currentStoreName.value.isEmpty
+                                ? Text(
+                                    "Hi ${authController.currentUsername.value}",
+                                    style: const TextStyle(
+                                        fontWeight: FontWeight.w700),
+                                  )
+                                : Text(
+                                    "Hi ${authController.currentUsername.value} (${authController.currentStoreName.value})"),
+                          ),
+                          Row(
+                            mainAxisAlignment: MainAxisAlignment.end,
+                            children: [
+                              'T&C '.text.make(),
+                              const Icon(Icons.arrow_outward, size: 15),
+                            ],
+                          ).onTap(() {
+                            authController.showTermsAndConditions(context);
+                          }),
+                        ],
+                      ),
+                    ),
+                    3.heightBox,
                     Padding(
                       padding: const EdgeInsets.all(8.0)
                           .copyWith(left: 12, right: 15),

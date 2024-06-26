@@ -118,4 +118,17 @@ class UploadCarouselsController extends GetxController {
       isUploadingFiles.value = false;
     }
   }
+
+  Future<void> deleteExistingCarousels() async {
+    try {
+      await firestore
+          .collection('vendors')
+          .doc(authController.currentUserUID.value)
+          .update({'carouselImages': []});
+      CustomSnackbar.show(
+          "Successs", "Existing carousel images deleted successfully!");
+    } catch (e) {
+      CustomSnackbar.show("Error", e.toString());
+    }
+  }
 }

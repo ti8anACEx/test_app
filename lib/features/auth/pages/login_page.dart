@@ -23,10 +23,10 @@ class LoginPage extends StatelessWidget {
             mainAxisAlignment: MainAxisAlignment.center,
             children: [
               Image.asset('assets/images/sauda2sale_png.png').onLongPress(() {
-                authController.toggleToTestCountryCode();
+                // authController.toggleToTestCountryCode();
               }, key),
               50.heightBox,
-              "Sauda Book".text.size(35).semiBold.make().onLongPress(() {
+              "Sauda2Sale".text.size(35).semiBold.make().onLongPress(() {
                 authController.toggleWantEmailLogin();
               }, key),
               50.heightBox,
@@ -49,7 +49,7 @@ class LoginPage extends StatelessWidget {
                   labelText: 'Password',
                   isObscured: true,
                   controller: authController.passwordController),
-              100.heightBox,
+              40.heightBox,
               Obx(
                 () => authController.isLoading.value
                     ? customProgressIndicator()
@@ -65,7 +65,22 @@ class LoginPage extends StatelessWidget {
                         color: pinkColor,
                       ),
               ),
-              50.heightBox,
+              15.heightBox,
+              Column(
+                children: [
+                  "By logging in, you accept to the".text.size(13).make(),
+                  "Terms & Conditions and Privacy Policy"
+                      .text
+                      .bold
+                      .color(darkPinkColor)
+                      .size(13)
+                      .make()
+                      .onTap(() {
+                    authController.showTermsAndConditions(context);
+                  }),
+                ],
+              ),
+              30.heightBox,
             ],
           ),
         ),

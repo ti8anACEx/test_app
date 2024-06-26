@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:flutter/widgets.dart';
 import 'package:get/get.dart';
 import 'package:getwidget/components/carousel/gf_items_carousel.dart';
 import 'package:test_app/commons/widgets/custom_button.dart';
@@ -34,8 +35,13 @@ class UploadCarouselImagesPage extends StatelessWidget {
             padding: const EdgeInsets.symmetric(horizontal: 20),
             child: SingleChildScrollView(
               child: Column(
-                crossAxisAlignment: CrossAxisAlignment.start,
+                crossAxisAlignment: CrossAxisAlignment.center,
                 children: [
+                  10.heightBox,
+                  "To view your applied Carousels, please open your Customer Sales App."
+                      .text
+                      .make(),
+                  10.heightBox,
                   Container(
                     decoration: BoxDecoration(
                       borderRadius: BorderRadius.circular(10),
@@ -137,7 +143,19 @@ class UploadCarouselImagesPage extends StatelessWidget {
                           },
                           mainAxisAlignment: MainAxisAlignment.center,
                         ),
-                  20.heightBox,
+                  15.heightBox,
+                  "OR".text.make(),
+                  15.heightBox,
+                  ElevatedButton(
+                    onPressed: () async {
+                      await uploadCarouselsController.deleteExistingCarousels();
+                    },
+                    style: ElevatedButton.styleFrom(
+                        shape: RoundedRectangleBorder(
+                            borderRadius: BorderRadius.circular(7)),
+                        backgroundColor: redColor),
+                    child: const Text("Delete existing carousel images"),
+                  ),
                 ],
               ),
             ),

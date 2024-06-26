@@ -1,12 +1,10 @@
 import 'dart:convert';
 import 'dart:developer' as developer;
-import 'package:flutter/material.dart';
 import 'package:http/http.dart' as http;
-import 'package:test_app/commons/widgets/custom_snackbar.dart';
 
 class TwilioService {
-  final String accountSid = 'AC307c86aed594eb6535d430e9d9d1c7ff';
-  final String authToken = '40825316289ec444dbc61b8ae9ed078d';
+  final String accountSid = 'AC1383e768448e0380960a67dcac8f617b';
+  final String authToken = 'e0c2de0719d4512b8fdc0787dcaecb75';
   final String serviceSid = 'VAfb7de0e934218256f8f60af738ec6364';
 
   String basicAuth() {

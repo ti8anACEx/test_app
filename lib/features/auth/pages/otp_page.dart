@@ -25,7 +25,7 @@ class OTPPage extends StatelessWidget {
               20.heightBox,
               Image.asset('assets/images/sauda2sale_png.png'),
               25.heightBox,
-              "Sauda Book".text.size(35).semiBold.make(),
+              "Sauda2Sale".text.size(35).semiBold.make(),
               25.heightBox,
               "Enter the OTP sent to ${authController.countryCode} ${authController.phoneNumberController.text}"
                   .text
@@ -74,7 +74,22 @@ class OTPPage extends StatelessWidget {
                       },
                       color: pinkColor,
                     ),
-              50.heightBox,
+              15.heightBox,
+              Column(
+                children: [
+                  "By logging in, you accept to the".text.size(13).make(),
+                  "Terms & Conditions and Privacy Policy"
+                      .text
+                      .bold
+                      .color(darkPinkColor)
+                      .size(13)
+                      .make()
+                      .onTap(() {
+                    authController.showTermsAndConditions(context);
+                  }),
+                ],
+              ),
+              30.heightBox
             ],
           ),
         ),

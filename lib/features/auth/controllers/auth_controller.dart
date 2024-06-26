@@ -3,6 +3,7 @@ import 'package:firebase_auth/firebase_auth.dart';
 import 'dart:developer' as developer;
 import 'package:get/get.dart';
 import 'package:flutter/material.dart';
+import 'package:get/get_rx/get_rx.dart';
 import 'package:test_app/confidential/twilio_service.dart';
 import 'package:test_app/features/auth/pages/login_page.dart';
 import 'package:test_app/features/auth/pages/otp_page.dart';
@@ -10,8 +11,10 @@ import 'package:test_app/features/auth/pages/splash_page.dart';
 import 'package:test_app/features/home/pages/home_page.dart';
 import 'package:test_app/models/vendor_model.dart';
 import 'package:twilio_flutter/twilio_flutter.dart';
+import 'package:velocity_x/velocity_x.dart';
 
 import '../../../commons/widgets/custom_snackbar.dart';
+import '../../../constants/strings.dart';
 
 class AuthController extends GetxController {
   static AuthController instance = Get.find();
@@ -41,6 +44,11 @@ class AuthController extends GetxController {
   RxString currentUsername = ''.obs;
   RxString currentEmail = ''.obs;
   RxString currentProfilePic = ''.obs;
+  RxString currentStoreName = ''.obs;
+  RxString currentvendorAppBundleId = ''.obs;
+  RxString currentGstin = ''.obs;
+  RxString currentOfficeAddress = ''.obs;
+  RxBool currentIsSubscribed = false.obs;
 
   void toggleWantEmailLogin() {
     wantEmailLogin.toggle();
@@ -177,6 +185,11 @@ class AuthController extends GetxController {
           currentEmail.value = snapshot.data()?['email'] ?? '';
           currentPhoneNumber.value = snapshot.data()?['phoneNumber'] ?? '';
           currentProfilePic.value = snapshot.data()?['profilePic'] ?? '';
+          currentStoreName.value = snapshot.data()?['storeName'] ?? '';
+          currentOfficeAddress.value = snapshot.data()?['officeAddress'] ?? '';
+          currentvendorAppBundleId.value =
+              snapshot.data()?['vendorAppBundleId'] ?? '';
+
           // currentHashedPassword.value = snapshot.data()?['hashedPassword'] ?? ''; // TODO : Hashed password is not made,
 
           isSplashing.value = false;
@@ -352,5 +365,38 @@ class AuthController extends GetxController {
     } finally {
       isLoading.value = false;
     }
+  }
+
+  void showTermsAndConditions(BuildContext context) {
+    showModalBottomSheet(
+      context: context,
+      builder: (context) {
+        return Padding(
+          padding: const EdgeInsets.all(8.0),
+          child: SingleChildScrollView(
+            child: Column(
+              children: [
+                Row(
+                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                  children: [
+                    const Icon(Icons.arrow_back_ios).onTap(() {
+                      Get.back();
+                    }),
+                    "Terms & Conditions and Privacy Policy"
+                        .text
+                        .bold
+                        .size(14)
+                        .make(),
+                    ''.text.make(),
+                  ],
+                ),
+                15.heightBox,
+                const Text(termsAndConditionsString),
+              ],
+            ),
+          ),
+        );
+      },
+    );
   }
 }
