@@ -1,9 +1,7 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
-import 'package:flutter/widgets.dart';
 import 'package:get/get.dart';
 import 'package:flutter/material.dart';
 import 'package:test_app/constants/colors.dart';
-import 'package:test_app/constants/strings.dart';
 import 'package:test_app/features/auth/controllers/auth_controller.dart';
 import 'package:test_app/features/home/controllers/item_controller.dart';
 import 'package:test_app/features/product_details/pages/product_details_page.dart';

@@ -72,7 +72,7 @@ class ItemController extends GetxController {
               Row(
                 mainAxisAlignment: MainAxisAlignment.spaceEvenly,
                 children: [
-                  "No".text.color(greenColor.withOpacity(0.5)).make(),
+                  "No".text.color(darkPinkColor.withOpacity(0.5)).make(),
                   "Yes".text.color(redColor).make().onTap(() {
                     FirebaseFirestore.instance
                         .collection('items')

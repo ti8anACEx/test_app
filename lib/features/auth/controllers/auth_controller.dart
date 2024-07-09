@@ -5,6 +5,7 @@ import 'package:get/get.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get_rx/get_rx.dart';
 import 'package:test_app/confidential/twilio_service.dart';
+import 'package:test_app/constants/colors.dart';
 import 'package:test_app/features/auth/pages/login_page.dart';
 import 'package:test_app/features/auth/pages/otp_page.dart';
 import 'package:test_app/features/auth/pages/splash_page.dart';
@@ -26,6 +27,7 @@ class AuthController extends GetxController {
 
   FirebaseAuth firebaseAuth = FirebaseAuth.instance;
   FirebaseFirestore firestore = FirebaseFirestore.instance;
+  TwilioService twilioService = TwilioService();
   late TwilioFlutter twilioFlutter;
 
   UserCredential? credential;
@@ -90,7 +92,6 @@ class AuthController extends GetxController {
 
   Future<void> twilioSendTheOTP() async {
     try {
-      TwilioService twilioService = TwilioService();
       final success =
           await twilioService.sendOtp(countryCode + phoneNumberController.text);
 
@@ -108,7 +109,6 @@ class AuthController extends GetxController {
   Future<void> twilioVerifyOTP() async {
     try {
       isLoading.value = true;
-      TwilioService twilioService = TwilioService();
 
       final responseData = await twilioService.verifyOtp(
           countryCode + phoneNumberController.text,
@@ -367,7 +367,7 @@ class AuthController extends GetxController {
     }
   }
 
-  void showTermsAndConditions(BuildContext context) {
+  void showTermsAndConditions(BuildContext context, {bool showLogout = false}) {
     showModalBottomSheet(
       context: context,
       builder: (context) {
@@ -392,11 +392,78 @@ class AuthController extends GetxController {
                 ),
                 15.heightBox,
                 const Text(termsAndConditionsString),
+                showLogout
+                    ? Column(
+                        children: [
+                          Padding(
+                            padding: const EdgeInsets.all(10),
+                            child: "Logout"
+                                .text
+                                .bold
+                                .size(20)
+                                .color(darkPinkColor)
+                                .make()
+                                .onTap(() async {
+                              await FirebaseAuth.instance.signOut();
+                            }),
+                          ),
+                          Padding(
+                            padding: const EdgeInsets.all(10),
+                            child: "Delete Account"
+                                .text
+                                .bold
+                                .size(18)
+                                .color(redColor)
+                                .make()
+                                .onTap(() async {
+                              deleteAcc(context);
+                            }),
+                          )
+                        ],
+                      )
+                    : Container()
               ],
             ),
           ),
         );
       },
     );
+  }
+
+  Future<void> deleteAcc(BuildContext context) async {
+    try {
+      showModalBottomSheet(
+        context: context,
+        builder: (context) {
+          return Column(
+            mainAxisSize: MainAxisSize.min,
+            children: [
+              20.heightBox,
+              "Do you want to delete this account for sure?\nThis will delete all your credentials, and\nyou can re-use your phone nummber to\ncreate a new account."
+                  .text
+                  .bold
+                  .make(),
+              20.heightBox,
+              Row(
+                mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+                children: [
+                  "No".text.color(darkPinkColor.withOpacity(0.5)).make(),
+                  "Yes".text.color(redColor).make().onTap(() async {
+                    var uid = currentUserUID.value;
+                    await FirebaseAuth.instance.signOut();
+                    firestore.collection('users').doc(uid).delete();
+                    CustomSnackbar.show(
+                        'Success', 'Account deleted successfully');
+                  }),
+                ],
+              ),
+              20.heightBox,
+            ],
+          );
+        },
+      );
+    } catch (e) {
+      CustomSnackbar.show('error', e.toString());
+    }
   }
 }

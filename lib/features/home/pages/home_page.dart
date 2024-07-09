@@ -1,5 +1,4 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
-import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_staggered_grid_view/flutter_staggered_grid_view.dart';
 import 'package:get/get.dart';
@@ -53,9 +52,6 @@ class HomePage extends StatelessWidget {
           body: Column(
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
-              // "Logout".text.make().onTap(() async {
-              //   await FirebaseAuth.instance.signOut();
-              // }),
               Container(
                 decoration: BoxDecoration(
                   color: textfieldGrey.withOpacity(0.8),
@@ -70,14 +66,14 @@ class HomePage extends StatelessWidget {
                     // Search Bar
                     Padding(
                       padding:
-                          const EdgeInsets.only(right: 10, top: 2, left: 10),
+                          const EdgeInsets.only(right: 10, top: 8, left: 20),
                       child: Row(
                         mainAxisAlignment: MainAxisAlignment.spaceBetween,
                         children: [
                           Obx(
                             () => authController.currentStoreName.value.isEmpty
                                 ? Text(
-                                    "Hi ${authController.currentUsername.value}",
+                                    "Hi ${authController.currentUsername.value} ",
                                     style: const TextStyle(
                                         fontWeight: FontWeight.w700),
                                   )
@@ -91,7 +87,8 @@ class HomePage extends StatelessWidget {
                               const Icon(Icons.arrow_outward, size: 15),
                             ],
                           ).onTap(() {
-                            authController.showTermsAndConditions(context);
+                            authController.showTermsAndConditions(context,
+                                showLogout: true);
                           }),
                         ],
                       ),

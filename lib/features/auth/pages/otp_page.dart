@@ -64,16 +64,18 @@ class OTPPage extends StatelessWidget {
                 ],
               ),
               20.heightBox,
-              authController.isLoading.value
-                  ? customProgressIndicator()
-                  : CustomButton(
-                      text: "Verify",
-                      mainAxisAlignment: MainAxisAlignment.center,
-                      onTap: () async {
-                        await authController.twilioVerifyOTP();
-                      },
-                      color: pinkColor,
-                    ),
+              Obx(
+                () => authController.isLoading.value
+                    ? customProgressIndicator()
+                    : CustomButton(
+                        text: "Verify",
+                        mainAxisAlignment: MainAxisAlignment.center,
+                        onTap: () async {
+                          await authController.twilioVerifyOTP();
+                        },
+                        color: pinkColor,
+                      ),
+              ),
               15.heightBox,
               Column(
                 children: [

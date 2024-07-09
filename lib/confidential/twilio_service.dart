@@ -1,32 +1,49 @@
 import 'dart:convert';
 import 'dart:developer' as developer;
+import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:http/http.dart' as http;
+import 'package:test_app/commons/widgets/custom_snackbar.dart';
 
 class TwilioService {
-  final String accountSid = 'AC1383e768448e0380960a67dcac8f617b';
-  final String authToken = 'e0c2de0719d4512b8fdc0787dcaecb75';
-  final String serviceSid = 'VAfb7de0e934218256f8f60af738ec6364';
+  FirebaseFirestore firestore = FirebaseFirestore.instance;
+
+  late final String accountSid;
+  late final String authToken;
+  late final String serviceSid;
 
   String basicAuth() {
     return 'Basic ${base64Encode(utf8.encode('$accountSid:$authToken'))}';
   }
 
   Future<bool> sendOtp(String phoneNumber) async {
-    final url =
-        'https://verify.twilio.com/v2/Services/$serviceSid/Verifications';
-    final response = await http.post(
-      Uri.parse(url),
-      headers: {
-        'Authorization': basicAuth(),
-        'Content-Type': 'application/x-www-form-urlencoded'
-      },
-      body: {'To': phoneNumber, 'Channel': 'sms'},
-    );
+    var doc =
+        await firestore.collection('confidential').doc('twilioCreds').get();
 
-    developer.log('Send OTP response status: ${response.statusCode}');
-    developer.log('Send OTP response body: ${response.body}');
+    if (doc.exists) {
+      Map<String, dynamic> data = doc.data() as Map<String, dynamic>;
+      accountSid = data['accountSid'];
+      authToken = data['authToken'];
+      serviceSid = data['serviceSid'];
 
-    return response.statusCode == 201;
+      final url =
+          'https://verify.twilio.com/v2/Services/$serviceSid/Verifications';
+      final response = await http.post(
+        Uri.parse(url),
+        headers: {
+          'Authorization': basicAuth(),
+          'Content-Type': 'application/x-www-form-urlencoded'
+        },
+        body: {'To': phoneNumber, 'Channel': 'sms'},
+      );
+
+      developer.log('Send OTP response status: ${response.statusCode}');
+      developer.log('Send OTP response body: ${response.body}');
+
+      return response.statusCode == 201;
+    } else {
+      CustomSnackbar.show('Error', 'Failed operation. Please try again.');
+      return false;
+    }
   }
 
   Future<String> verifyOtp(String phoneNumber, String code) async {
